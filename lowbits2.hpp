@@ -16,6 +16,18 @@
 #define TYPENAME
 #endif
 
+#if LOWBITS_NOISE >= 1
+#define LOWBITS_NOISE1(x) x
+#else
+#define LOWBITS_NOISE1(x)
+#endif
+
+#if LOWBITS_NOISE >= 2
+#define LOWBITS_NOISE2(x) x
+#else
+#define LOWBITS_NOISE2(x)
+#endif
+
 #if defined(_MSC_VER) && !defined(_STLPORT_VERSION)
 
 namespace std // Thppt.
@@ -54,11 +66,16 @@ template<typename BoolIt, typename BoolItIt, typename Diff> inline Diff lowbits_
 	return n;
 }
 
+/* Potential optimizations:
+   
+   Remove mark area - probably can't do this.
+   Optimize ascension so that there's a best match. */
+
+/* Note: To do non power-of-two sorts, mask off the ends of the bit levels according to the bits of -input_size. */
+
 template<typename RndIt, typename OutIt, typename Pred> OutIt lowbits_sort(RndIt first, RndIt last, OutIt x, Pred pr)
 {
-#ifdef LOWBITS_NOISY
-	cout << "Sort hath begun." << endl;
-#endif
+	LOWBITS_NOISE1(cout << "Sort hath begun." << endl);
 
 	typedef typename std::iterator_traits<RndIt>::
 #if defined(_MSC_VER) && !defined(_STLPORT_VERSION)
@@ -121,10 +138,9 @@ template<typename RndIt, typename OutIt, typename Pred> OutIt lowbits_sort(RndIt
 		typename std::vector<size_type>::iterator level_it(bucket_levels.end());
 		size_type level_pt = 0;
 		
-		// No idea about termination condition.
-#ifdef LOWBITS_NOISY
-		cout << "Step 1-4" << endl;
-#endif
+		// Termination is a wild guess.
+		LOWBITS_NOISE1(cout << "Step 1-4" << endl);
+
 		for(;;)
 		{
 			// Step 1: Descend to location of lowest bit.
@@ -146,6 +162,8 @@ template<typename RndIt, typename OutIt, typename Pred> OutIt lowbits_sort(RndIt
 
 			while(level_it != bucket_levels.end() && mark_area[*level_it + level_pt])
 			{
+				LOWBITS_NOISE2(cout << "x");
+
 				++level_it;
 				level_pt >>= 1;
 			}
@@ -155,6 +173,8 @@ template<typename RndIt, typename OutIt, typename Pred> OutIt lowbits_sort(RndIt
 
 
 			// Step 3.1: Flip a bit in the marked area, and ascend out.
+
+			LOWBITS_NOISE2(cout << ";");
 
 			mark_area[*level_it + level_pt].flip();
 			bit_bucket[*level_it + level_pt].flip();
@@ -166,16 +186,31 @@ template<typename RndIt, typename OutIt, typename Pred> OutIt lowbits_sort(RndIt
 
 			while(level_it != bucket_levels.end())
 			{
+				size_type pt0, pt1;
+
+				pt0 = lowbits_descend(bit_bucket, bucket_levels.begin(), level_it, (level_pt << 1));
+				pt1 = lowbits_descend(bit_bucket, bucket_levels.begin(), level_it, (level_pt << 1) | 1);
+
+				LOWBITS_NOISE2(cout << pt0 << "," << pt1 << ":");
+
 				if(!mark_area[*level_it + level_pt] && 
 					bit_bucket[*level_it + level_pt] != !pr(
-					first[lowbits_descend(bit_bucket, bucket_levels.begin(), level_it, (level_pt << 1))], 
-					first[lowbits_descend(bit_bucket, bucket_levels.begin(), level_it, (level_pt << 1) | 1)]))
-
+					first[pt0], 
+					first[pt1]))
+				{
+					LOWBITS_NOISE2(cout << "1;");
 					bit_bucket[*level_it + level_pt].flip();
+				}
+				else
+				{
+					LOWBITS_NOISE2(cout << "0;");
+				}
 
 				++level_it;
 				level_pt >>= 1;
 			}
+
+			LOWBITS_NOISE2(cout << endl);
 
 			// Step 4: NEXT!
 		}
@@ -183,9 +218,7 @@ template<typename RndIt, typename OutIt, typename Pred> OutIt lowbits_sort(RndIt
 
 	// Step 5: Done.
 
-#ifdef LOWBITS_NOISY
-	cout << "Sort hath ended." << endl;
-#endif
+	LOWBITS_NOISE1(cout << "Sort hath ended." << endl);
 
 	return x;
 }

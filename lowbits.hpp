@@ -1,7 +1,7 @@
 #ifndef LOWBITS_HPP
 #define LOWBITS_HPP
 
-#include "lowbits1.hpp"
+#include "lowbits2.hpp"
 
 #define PROCESSOR_MHZ ((unsigned __int64)450000000)
 
