@@ -1,0 +1,8 @@
+*.exe
+*.ncb
+*.plg
+*.s
+*.suo
+
+Debug
+Release
