@@ -5,11 +5,9 @@
 #include <iostream>
 #include <vector>
 
-using namespace std;
-
 int main()
 {
-	vector<type> array_in, array_out;
+	std::vector<type> array_in, array_out;
 	size_t scale, c, ops;
 	size_t optotal, sortcount;
 
@@ -24,33 +22,33 @@ int main()
 		for(c = 0; c < (1u << scale); ++c)
 			array_in[c] = type(c + 1);
 
-		next_permutation(array_in.begin(), array_in.end());
+		std::next_permutation(array_in.begin(), array_in.end());
 
-		while(adjacent_find(array_in.begin(), array_in.end(), greater<type>()) != array_in.end())
+		while(std::adjacent_find(array_in.begin(), array_in.end(), std::greater<type>()) != array_in.end())
 		{
 			ops = 0;
 			lowbits_sort(array_in.begin(), array_in.end(), array_out.begin(), counted_less<type>(ops));
 			optotal += ops;
 			++sortcount;
 
-			if(adjacent_find(array_out.begin(), array_out.end(), greater<type>()) != array_out.end())
+			if(std::adjacent_find(array_out.begin(), array_out.end(), std::greater<type>()) != array_out.end())
 			{
-				cout << "Failure. Original sequence:" << endl;
-				copy(array_in.begin(), array_in.end(), ostream_iterator<type>(cout, "\t"));
-				cout << endl;
+				std::cout << "Failure. Original sequence:" << std::endl;
+				std::copy(array_in.begin(), array_in.end(), std::ostream_iterator<type>(std::cout, "\t"));
+				std::cout << std::endl;
 
-				cout << "New sequence:" << endl;
-				copy(array_out.begin(), array_out.end(), ostream_iterator<type>(cout, "\t"));
-				cout << endl;
+				std::cout << "New sequence:" << std::endl;
+				std::copy(array_out.begin(), array_out.end(), std::ostream_iterator<type>(std::cout, "\t"));
+				std::cout << std::endl;
 
-				cout << "Ops: " << ops << endl;
+				std::cout << "Ops: " << ops << std::endl;
 				return 0;
 			}
 
-			next_permutation(array_in.begin(), array_in.end());
+			std::next_permutation(array_in.begin(), array_in.end());
 		}
 
-		cout << optotal << ":" << sortcount << endl;
+		std::cout << optotal << ":" << sortcount << std::endl;
 	}
 
 	return 0;

@@ -3,12 +3,10 @@
 #include "test.hpp"
 
 #include <algorithm>
-#include <iostream>
 #include <functional>
-#include <ctime>
+#include <iostream>
 #include <cstdlib>
-
-using namespace std;
+#include <ctime>
 
 // 1234
 // 1243
@@ -26,10 +24,10 @@ int main()
 
 	size_t ops;
 
-	cout << "lowbits: " << size << endl;
+	std::cout << "lowbits: " << size << std::endl;
 
-	srand(unsigned(time(NULL)));
-	generate(array_in, array_in + size, rand);
+	std::srand(unsigned(std::time(NULL)));
+	std::generate(array_in, array_in + size, rand);
 
 //	sort(array_in, array_in + size, less<type>());
 
@@ -37,13 +35,13 @@ int main()
 //	cout << endl;
 
 	ops = 0;
-	copy(array_in, array_in + size, array_out);
-	sort(array_out, array_out + size, counted_less<type>(ops));
+	std::copy(array_in, array_in + size, array_out);
+	std::sort(array_out, array_out + size, counted_less<type>(ops));
 //	copy(array_out, array_out + size, ostream_iterator<type>(cout, "\t"));
 //	cout << endl;
-	cout << "Built-in sort: " << ops << endl;
+	std::cout << "Built-in sort: " << ops << std::endl;
 
-	fill(array_out, array_out + size, 0);
+	std::fill(array_out, array_out + size, 0);
 
 	ops = 0;
 	then = clock_ull();
@@ -51,12 +49,12 @@ int main()
 	now = clock_ull();
 //	copy(array_out, array_out + size, ostream_iterator<type>(cout, "\t"));
 //	cout << endl;
-	cout << "Ops: " << ops << endl;
+	std::cout << "Ops: " << ops << std::endl;
 
-	cout << "Time: " << (1000 * (now - then) / clock_ull_frq()) << " ms" << endl;
+	std::cout << "Time: " << (1000 * (now - then) / clock_ull_frq()) << " ms" << std::endl;
 
-	cout << (adjacent_find(array_out, array_out + size, greater<type>()) == array_out + size ? 
-		"It's sorted!" : "It's not sorted.") << endl;
+	std::cout << (std::adjacent_find(array_out, array_out + size, std::greater<type>()) == array_out + size ?
+		"It's sorted!" : "It's not sorted.") << std::endl;
 
 	return 0;
 }

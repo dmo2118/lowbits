@@ -7,19 +7,19 @@
 #include <iterator>
 
 #if LOWBITS_NOISE >= 1
-#define LOWBITS_NOISE1(x) x
+#	define LOWBITS_NOISE1(x) x
 #else
-#define LOWBITS_NOISE1(x)
+#	define LOWBITS_NOISE1(x)
 #endif
 
 #if LOWBITS_NOISE >= 2
-#define LOWBITS_NOISE2(x) x
+#	define LOWBITS_NOISE2(x) x
 #else
-#define LOWBITS_NOISE2(x)
+#	define LOWBITS_NOISE2(x)
 #endif
 
 #if LOWBITS_NOISE
-#include <iostream>
+#	include <iostream>
 #endif
 
 /*
