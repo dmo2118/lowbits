@@ -1,6 +1,6 @@
 #define LOWBITS_NOISE 1
 
-#include "lowbits.hpp"
+#include "test.hpp"
 
 #include <algorithm>
 #include <iostream>
