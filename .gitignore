@@ -2,7 +2,9 @@
 *.ncb
 *.plg
 *.s
+*.sdf
 *.suo
+*.VC.opendb
 
 Debug
 Release

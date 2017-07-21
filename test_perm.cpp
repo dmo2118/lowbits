@@ -1,9 +1,9 @@
 #include "lowbits.hpp"
 
 #include <algorithm>
-#include <vector>
-
+#include <functional>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -22,7 +22,7 @@ int main()
 		array_out.resize(1u << scale);
 
 		for(c = 0; c < (1u << scale); ++c)
-			array_in[c] = c + 1;
+			array_in[c] = type(c + 1);
 
 		next_permutation(array_in.begin(), array_in.end());
 

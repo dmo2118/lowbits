@@ -10,8 +10,6 @@
 
 using namespace std;
 
-static const size_t size = 64;
-
 // 1234
 // 1243
 // 1324
@@ -21,6 +19,8 @@ static const size_t size = 64;
 
 int main()
 {
+	static const size_t size = 64;
+
 	unsigned __int64 then, now;
 	type array_in[size], array_out[size];
 
@@ -28,7 +28,7 @@ int main()
 
 	cout << "lowbits: " << size << endl;
 
-	srand(time(NULL));
+	srand(unsigned(time(NULL)));
 	generate(array_in, array_in + size, rand);
 
 //	sort(array_in, array_in + size, less<type>());

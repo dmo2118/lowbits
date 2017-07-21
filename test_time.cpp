@@ -17,7 +17,7 @@ int main()
 	unsigned __int64 then, sum;
 	unsigned scale, props, n;
 
-	srand(time(NULL));
+	srand(unsigned(time(NULL)));
 
 	for(scale = 0; scale < 32; scale++)
 	{

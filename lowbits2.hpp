@@ -28,7 +28,7 @@
 #define LOWBITS_NOISE2(x)
 #endif
 
-#if defined(_MSC_VER) && !defined(_STLPORT_VERSION)
+#if defined(_MSC_VER) && _MSC_VER <= 1200 && !defined(_STLPORT_VERSION)
 
 namespace std // Thppt.
 {
@@ -78,7 +78,7 @@ template<typename RndIt, typename OutIt, typename Pred> OutIt lowbits_sort(RndIt
 	LOWBITS_NOISE1(cout << "Sort hath begun." << endl);
 
 	typedef typename std::iterator_traits<RndIt>::
-#if defined(_MSC_VER) && !defined(_STLPORT_VERSION)
+#if defined(_MSC_VER) && _MSC_VER <= 1200 && !defined(_STLPORT_VERSION)
 		distance_type
 #else
 		difference_type
