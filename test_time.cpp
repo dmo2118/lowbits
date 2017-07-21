@@ -15,7 +15,8 @@ int main()
 {
 	vector<type> array_in;
 	unsigned __int64 then, sum;
-	unsigned scale, props, n;
+	unsigned scale, n;
+	size_t props;
 
 	srand(unsigned(time(NULL)));
 

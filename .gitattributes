@@ -7,3 +7,5 @@
 *.sln                   text eol=crlf
 *.vcprojx               text
 *.vcprojx.filters       text
+
+Makefile                text eol=lf
