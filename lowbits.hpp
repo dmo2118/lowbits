@@ -3,53 +3,67 @@
 
 #include "lowbits2.hpp"
 
-#define PROCESSOR_MHZ ((unsigned __int64)450000000)
+#if 0 // defined __unix__
 
-#if defined(_MSC_VER)
+/* clock() works well enough on Linux. No need for gettimeofday(2). */
 
-#pragma warning(push, 1)
+#include <sys/time.h>
 
-static __inline unsigned __int64 rdtsc()
+namespace
 {
-	__asm _emit 0x0F __asm _emit 0x31; // rdtsc
+	static inline unsigned long long clock_ull()
+	{
+		struct timeval tv;
+		gettimeofday(&tv, NULL);
+		return tv.tv_sec * 1000000ull + tv.tv_usec;
+	}
+
+	static inline unsigned long clock_ull_frq()
+	{
+		return 1000000;
+	}
 }
 
-#pragma warning(pop)
+#elif defined _WIN32
 
-#elif defined(__GNUC__)
-
-// I'm broken.
-/*
-static __inline __fastcall unsigned long long rdtsc()
-{
-	asm("rdtsc");
-
-	return 0;
-}
-*/
-
-/*
-#include <ctime>
-
-static __inline __fastcall unsigned long long rdtsc()
-{
-	return (unsigned long long)std::clock() * PROCESSOR_MHZ / CLOCKS_PER_SEC;
-}
-*/
+/* MSVCRT clock() has 1-2 ms resolution. Pretty mediocre. */
 
 #include <windows.h>
-static __inline __fastcall unsigned long long rdtsc()
+
+namespace
 {
-	LARGE_INTEGER t, frq;
+	inline unsigned long long clock_ull()
+	{
+		LARGE_INTEGER t;
+		QueryPerformanceCounter(&t);
+		return t.QuadPart;
+	}
 
-	QueryPerformanceCounter(&t);
-	QueryPerformanceFrequency(&frq);
-
-	return t.QuadPart * PROCESSOR_MHZ / frq.QuadPart;
+	inline unsigned long long clock_ull_frq()
+	{
+		LARGE_INTEGER frq;
+		QueryPerformanceFrequency(&frq);
+		return frq.QuadPart;
+	}
 }
 
 #else
-#error Fixme, todo, et cetera.
+
+#include <ctime>
+
+namespace
+{
+	inline unsigned long long clock_ull()
+	{
+		return std::clock();
+	}
+
+	inline unsigned long long clock_ull_frq()
+	{
+		return CLOCKS_PER_SEC;
+	}
+}
+
 #endif
 
 template<class T> class counted_less
@@ -88,12 +102,5 @@ public:
 };
 
 typedef unsigned short type;
-
-namespace std
-{
-	template<> struct iterator_traits<type *> : public iterator<random_access_iterator_tag, type>
-	{
-	};
-}
 
 #endif

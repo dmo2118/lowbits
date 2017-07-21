@@ -1,9 +1,6 @@
 *.cpp                   text
 *.hpp                   text
 
-*.dsp                   text eol=crlf
-*.dsw                   text eol=crlf
-
 *.sln                   text eol=crlf
 *.vcprojx               text
 *.vcprojx.filters       text

@@ -3,18 +3,8 @@
 #ifndef __LOWBITS_HPP__
 #define __LOWBITS_HPP__
 
-#ifdef _MSC_VER
-#pragma warning(disable: 4786)
-#endif
-
 #include <vector>
 #include <iterator>
-
-#if !defined(_MSC_VER)
-#define TYPENAME typename
-#else
-#define TYPENAME
-#endif
 
 #if LOWBITS_NOISE >= 1
 #define LOWBITS_NOISE1(x) x
@@ -30,17 +20,6 @@
 
 #if LOWBITS_NOISE
 #include <iostream>
-#endif
-
-#if defined(_MSC_VER) && _MSC_VER <= 1200 && !defined(_STLPORT_VERSION)
-
-namespace std // Thppt.
-{
-	template<> class vector<bool, allocator<bool> > : public _Bvector
-	{
-	};
-}
-
 #endif
 
 /*
@@ -81,13 +60,7 @@ template<typename RndIt, typename OutIt, typename Pred> OutIt lowbits_sort(RndIt
 {
 	LOWBITS_NOISE1(std::cout << "Sort hath begun." << std::endl);
 
-	typedef typename std::iterator_traits<RndIt>::
-#if defined(_MSC_VER) && _MSC_VER <= 1200 && !defined(_STLPORT_VERSION)
-		distance_type
-#else
-		difference_type
-#endif
-		size_type;
+	typedef typename std::iterator_traits<RndIt>::difference_type size_type;
 
 	size_type input_size = last - first;
 

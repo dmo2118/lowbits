@@ -21,7 +21,7 @@ int main()
 {
 	static const size_t size = 64;
 
-	unsigned __int64 then, now;
+	unsigned long long then, now;
 	type array_in[size], array_out[size];
 
 	size_t ops;
@@ -46,14 +46,14 @@ int main()
 	fill(array_out, array_out + size, 0);
 
 	ops = 0;
-	then = rdtsc();
+	then = clock_ull();
 	lowbits_sort(array_in, array_in + size, array_out, counted_less<type>(ops));
-	now = rdtsc();
+	now = clock_ull();
 //	copy(array_out, array_out + size, ostream_iterator<type>(cout, "\t"));
 //	cout << endl;
 	cout << "Ops: " << ops << endl;
 
-	cout << "Time: " << ((__int64)(now - then) / 450000.0) << endl;
+	cout << "Time: " << (1000 * (now - then) / clock_ull_frq()) << " ms" << endl;
 
 	cout << (adjacent_find(array_out, array_out + size, greater<type>()) == array_out + size ? 
 		"It's sorted!" : "It's not sorted.") << endl;
