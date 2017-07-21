@@ -8,25 +8,23 @@
 int main()
 {
 	std::vector<type> array_in, array_out;
-	size_t scale, c, ops;
-	size_t optotal, sortcount;
 
-	sortcount = 0;
-	optotal = 0;
+	size_t sortcount = 0;
+	size_t optotal = 0;
 
-	for(scale = 0; scale < 32u; scale++)
+	for(size_t scale = 0; scale < 32u; scale++)
 	{
 		array_in.resize(1u << scale);
 		array_out.resize(1u << scale);
 
-		for(c = 0; c < (1u << scale); ++c)
+		for(size_t c = 0; c < (1u << scale); ++c)
 			array_in[c] = type(c + 1);
 
 		std::next_permutation(array_in.begin(), array_in.end());
 
 		while(std::adjacent_find(array_in.begin(), array_in.end(), std::greater<type>()) != array_in.end())
 		{
-			ops = 0;
+			size_t ops = 0;
 			lowbits_sort(array_in.begin(), array_in.end(), array_out.begin(), counted_less<type>(ops));
 			optotal += ops;
 			++sortcount;

@@ -10,24 +10,22 @@
 int main()
 {
 	std::vector<type> array_in;
-	unsigned long long then, sum, frq = clock_ull_frq();
-	unsigned scale, n;
-	size_t props;
+	unsigned long long frq = clock_ull_frq();
 
 	std::srand(unsigned(std::time(NULL)));
 
-	for(scale = 0; scale < 32; scale++)
+	for(unsigned scale = 0; scale < 32; scale++)
 	{
-		sum = 0;
-		props = 0;
-		n = 0;
+		unsigned long long sum = 0;
+		size_t props = 0;
+		unsigned n = 0;
 		array_in.resize(1u << scale);
 
 		while(sum < frq / 2)
 		{
 			std::generate(array_in.begin(), array_in.end(), rand);
 
-			then = clock_ull();
+			unsigned long long then = clock_ull();
 			lowbits_sort(array_in.begin(), array_in.end(), null_object(), counted_less<type>(props));
 			sum += clock_ull() - then;
 

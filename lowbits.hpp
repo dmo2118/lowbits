@@ -89,14 +89,12 @@ template<typename RndIt, typename OutIt, typename Pred> OutIt lowbits_sort(RndIt
 	std::vector<size_type> bucket_levels;
 
 	{
-		size_type level_first;
-
 		size_type bucket_size = 0, level_size = input_size;
 
 		while(level_size != 1)
 		{
 			level_size = (level_size + 1) >> 1;
-			level_first = bucket_size;
+			size_type level_first = bucket_size;
 
 			bucket_size += level_size;
 
@@ -163,10 +161,8 @@ template<typename RndIt, typename OutIt, typename Pred> OutIt lowbits_sort(RndIt
 
 			while(level_it != bucket_levels.end())
 			{
-				size_type pt0, pt1;
-
-				pt0 = lowbits_descend(bit_bucket, bucket_levels.begin(), level_it, (level_pt << 1));
-				pt1 = lowbits_descend(bit_bucket, bucket_levels.begin(), level_it, (level_pt << 1) | 1);
+				size_type pt0 = lowbits_descend(bit_bucket, bucket_levels.begin(), level_it, (level_pt << 1));
+				size_type pt1 = lowbits_descend(bit_bucket, bucket_levels.begin(), level_it, (level_pt << 1) | 1);
 
 				LOWBITS_NOISE2(std::cout << pt0 << "," << pt1 << ":");
 

@@ -19,14 +19,11 @@ int main()
 {
 	static const size_t size = 64;
 
-	unsigned long long then, now;
-	type array_in[size], array_out[size];
-
-	size_t ops;
-
 	std::cout << "lowbits: " << size << std::endl;
 
 	std::srand(unsigned(std::time(NULL)));
+
+	type array_in[size], array_out[size];
 	std::generate(array_in, array_in + size, rand);
 
 //	sort(array_in, array_in + size, less<type>());
@@ -34,7 +31,7 @@ int main()
 //	copy(array_in, array_in + size, ostream_iterator<type>(cout, "\t"));
 //	cout << endl;
 
-	ops = 0;
+	size_t ops = 0;
 	std::copy(array_in, array_in + size, array_out);
 	std::sort(array_out, array_out + size, counted_less<type>(ops));
 //	copy(array_out, array_out + size, ostream_iterator<type>(cout, "\t"));
@@ -44,9 +41,9 @@ int main()
 	std::fill(array_out, array_out + size, 0);
 
 	ops = 0;
-	then = clock_ull();
+	unsigned long long then = clock_ull();
 	lowbits_sort(array_in, array_in + size, array_out, counted_less<type>(ops));
-	now = clock_ull();
+	unsigned long long now = clock_ull();
 //	copy(array_out, array_out + size, ostream_iterator<type>(cout, "\t"));
 //	cout << endl;
 	std::cout << "Ops: " << ops << std::endl;
