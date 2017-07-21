@@ -1,8 +1,4 @@
-*.cpp                   text
-*.hpp                   text
+*.cpp           text
+*.hpp           text
 
-*.sln                   text eol=crlf
-*.vcprojx               text
-*.vcprojx.filters       text
-
-Makefile                text eol=lf
+Makefile        text eol=lf
