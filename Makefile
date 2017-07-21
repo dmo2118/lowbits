@@ -2,11 +2,25 @@
 CXXFLAGS=-std=c++14 -Wall -g # -O3 -DNDEBUG
 
 exes=test_simple test_permute test_time
+objs=$(patsubst %,%.o,$(exes))
+
+compile_cmd=$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) -o
 
 all: $(exes)
 
 clean:
-	-rm $(exes)
+	rm -f $(exes) $(objs) lowbits.o
 
-%: %.cpp lowbits.hpp test.hpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+%: %.o lowbits.o
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ $^
+
+%.o: %.cpp test.hpp lowbits.hpp
+	$(compile_cmd) $@ $<
+
+lowbits.o: lowbits.cpp lowbits.hpp
+	$(compile_cmd) $@ $<
+
+.SECONDARY: $(objs)
+
+# Inhibit implicit straight-from-source build rule
+%: %.cpp
