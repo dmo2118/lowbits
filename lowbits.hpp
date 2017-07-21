@@ -8,19 +8,19 @@
 #include <iterator>
 #include <vector>
 
-#if LOWBITS_NOISE >= 1
-#	define LOWBITS_NOISE1(x) x
+#if LOWBITS_DEBUG >= 1
+#	define LOWBITS_DEBUG1(x) { std::cout << "* " << (x) << std::endl; }
 #else
-#	define LOWBITS_NOISE1(x)
+#	define LOWBITS_DEBUG1(x)
 #endif
 
-#if LOWBITS_NOISE >= 2
-#	define LOWBITS_NOISE2(x) x
+#if LOWBITS_DEBUG >= 2
+#	define LOWBITS_DEBUG2(x) (std::cout << x << std::flush)
 #else
-#	define LOWBITS_NOISE2(x)
+#	define LOWBITS_DEBUG2(x)
 #endif
 
-#if LOWBITS_NOISE
+#if LOWBITS_DEBUG
 #	include <iostream>
 #endif
 
@@ -62,7 +62,7 @@ public:
 template<typename RndIt, typename Pred> lowbits<RndIt, Pred>::lowbits(RndIt first, size_type input_size, Pred pr):
 	_lowbits_base(input_size), _first(first), _pr(pr)
 {
-	LOWBITS_NOISE1(std::cout << "Sort hath begun." << std::endl);
+	LOWBITS_DEBUG1(__FUNCTION__);
 
 	// Step 0.1: Populate the trei; gather stating bit locations.
 
@@ -108,7 +108,7 @@ template<typename RndIt, typename Pred> _lowbits_base::size_type lowbits<RndIt, 
 
 	while(level_it != _bucket_levels.end() && _mark_area[*level_it + level_pt])
 	{
-		LOWBITS_NOISE2(std::cout << "x");
+		LOWBITS_DEBUG2("x");
 
 		++level_it;
 		level_pt >>= 1;
@@ -119,7 +119,7 @@ template<typename RndIt, typename Pred> _lowbits_base::size_type lowbits<RndIt, 
 
 	// Step 3.1: Flip a bit in the marked area, and ascend out.
 
-	LOWBITS_NOISE2(std::cout << ";");
+	LOWBITS_DEBUG2(";");
 
 	_mark_area[*level_it + level_pt].flip();
 	_bit_bucket[*level_it + level_pt].flip();
@@ -134,26 +134,26 @@ template<typename RndIt, typename Pred> _lowbits_base::size_type lowbits<RndIt, 
 		size_type pt0 = _descend(level_it, (level_pt << 1));
 		size_type pt1 = _descend(level_it, (level_pt << 1) | 1);
 
-		LOWBITS_NOISE2(std::cout << pt0 << "," << pt1 << ":");
+		LOWBITS_DEBUG2(pt0 << "," << pt1 << ":");
 
 		if(!_mark_area[*level_it + level_pt] &&
 			_bit_bucket[*level_it + level_pt] != !_pr(
 				_first[pt0],
 				_first[pt1]))
 		{
-			LOWBITS_NOISE2(std::cout << "1;");
+			LOWBITS_DEBUG2("1;");
 			_bit_bucket[*level_it + level_pt].flip();
 		}
 		else
 		{
-			LOWBITS_NOISE2(std::cout << "0;");
+			LOWBITS_DEBUG2("0;");
 		}
 
 		++level_it;
 		level_pt >>= 1;
 	}
 
-	LOWBITS_NOISE2(std::cout << std::endl);
+	LOWBITS_DEBUG2('\n');
 
 	// Step 4: NEXT!
 	return result;
@@ -166,14 +166,14 @@ namespace
 		typename std::iterator_traits<RndIt>::difference_type size = last - first;
 		lowbits<RndIt, Pred> order(first, size, pr);
 
-		LOWBITS_NOISE1(std::cout << "Step 1-4" << std::endl);
+		LOWBITS_DEBUG1(__FUNCTION__);
 		while(size)
 		{
 			*x = first[order()];
 			++x;
 			--size;
 		}
-		LOWBITS_NOISE1(std::cout << "Sort hath ended." << std::endl);
+		LOWBITS_DEBUG1("lowbits_sort done");
 
 		return x;
 	}

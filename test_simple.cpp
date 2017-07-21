@@ -1,4 +1,4 @@
-#define LOWBITS_NOISE 1
+#define LOWBITS_DEBUG 1
 
 #include "test.hpp"
 
