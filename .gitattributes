@@ -2,3 +2,6 @@
 *.hpp           text
 
 Makefile        text eol=lf
+
+README.md       text
+*.svg           text
