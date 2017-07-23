@@ -25,11 +25,6 @@
 
 // FIXME: Step 1 doesn't work on initial run. (This is probably OK now.)
 
-/* Potential optimizations:
-   
-   Remove mark area - probably can't do this.
-   Optimize ascension so that there's a best match. */
-
 class _lowbits_base
 {
 public:
@@ -128,15 +123,32 @@ template<typename RndIt, typename Pred> _lowbits_base::size_type lowbits<RndIt, 
 	_mark_area[*level_it + level_pt].flip();
 	_bit_bucket[*level_it + level_pt].flip();
 
-	++level_it;
-	level_pt >>= 1;
-
 	// Step 3.2: Flip bits & ascend until predicate is true.
 
-	while(level_it != _bucket_levels.end())
+	size_type pt = _descend(level_it, (level_pt << 1) | _bit_bucket[*level_it + level_pt]);
+
+	for(;;)
 	{
-		size_type pt0 = _descend(level_it, (level_pt << 1));
-		size_type pt1 = _descend(level_it, (level_pt << 1) | 1);
+		++level_it;
+		level_pt >>= 1;
+
+		if(level_it == _bucket_levels.end())
+			break;
+
+		size_type pt0, pt1;
+		if(_bit_bucket[*level_it + level_pt])
+		{
+			pt0 = _descend(level_it, (level_pt << 1));
+			pt1 = pt;
+		}
+		else
+		{
+			pt0 = pt;
+			pt1 = _descend(level_it, (level_pt << 1) | 1);
+		}
+
+		assert(pt0 == _descend(level_it, (level_pt << 1)));
+		assert(pt1 == _descend(level_it, (level_pt << 1) | 1));
 
 		LOWBITS_DEBUG2(pt0 << "," << pt1 << ":");
 
@@ -153,9 +165,10 @@ template<typename RndIt, typename Pred> _lowbits_base::size_type lowbits<RndIt, 
 			LOWBITS_DEBUG2("0;");
 		}
 
-		++level_it;
-		level_pt >>= 1;
+		pt = _bit_bucket[*level_it + level_pt] ? pt1 : pt0;
 	}
+
+	// TODO: We should already know the next result at this point. Save it.
 
 	LOWBITS_DEBUG2('\n');
 
