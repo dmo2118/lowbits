@@ -1,5 +1,6 @@
 test_simple
 test_permute
 test_time
+example
 
 *.o

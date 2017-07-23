@@ -1,7 +1,7 @@
 # GCC 5 and earlier needs -std=c++14.
 CXXFLAGS=-std=c++14 -Wall -g # -O3 -DNDEBUG
 
-exes=test_simple test_permute test_time
+exes=test_simple test_permute test_time example
 objs=$(patsubst %,%.o,$(exes))
 
 compile_cmd=$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) -o
@@ -18,6 +18,9 @@ clean:
 	$(compile_cmd) $@ $<
 
 lowbits.o: lowbits.cpp lowbits.hpp
+	$(compile_cmd) $@ $<
+
+example.o: example.cpp lowbits.hpp
 	$(compile_cmd) $@ $<
 
 .SECONDARY: $(objs)
