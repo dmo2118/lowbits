@@ -26,7 +26,7 @@ int main()
 			std::generate(array_in.begin(), array_in.end(), rand);
 
 			unsigned long long then = clock_ull();
-			lowbits_sort(array_in.begin(), array_in.end(), null_object(), counted_less<type>(props));
+			lowbits_sort(array_in.begin(), array_in.end(), null_object(), counted_less(props));
 			sum += clock_ull() - then;
 
 			++n;

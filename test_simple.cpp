@@ -33,7 +33,7 @@ int main()
 
 	size_t ops = 0;
 	std::copy(array_in, array_in + size, array_out);
-	std::sort(array_out, array_out + size, counted_less<type>(ops));
+	std::sort(array_out, array_out + size, counted_less(ops));
 //	copy(array_out, array_out + size, ostream_iterator<type>(cout, "\t"));
 //	cout << endl;
 	std::cout << "Built-in sort: " << ops << std::endl;
@@ -42,7 +42,7 @@ int main()
 
 	ops = 0;
 	unsigned long long then = clock_ull();
-	lowbits_sort(array_in, array_in + size, array_out, counted_less<type>(ops));
+	lowbits_sort(array_in, array_in + size, array_out, counted_less(ops));
 	unsigned long long now = clock_ull();
 //	copy(array_out, array_out + size, ostream_iterator<type>(cout, "\t"));
 //	cout << endl;

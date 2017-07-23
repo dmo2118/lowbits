@@ -66,16 +66,16 @@ namespace
 
 #endif
 
-template<class T> class counted_less
+class counted_less
 {
 private:
 	size_t &_ops;
 public:
-	counted_less(size_t &ops) : _ops(ops)
+	counted_less(size_t &ops): _ops(ops)
 	{
 	}
 
-	bool operator()(const T &x, const T &y)
+	template<typename T, typename U> bool operator ()(const T &x, const U &y) const
 	{
 		++_ops;
 		return x < y;

@@ -25,7 +25,7 @@ int main()
 		while(std::adjacent_find(array_in.begin(), array_in.end(), std::greater<type>()) != array_in.end())
 		{
 			size_t ops = 0;
-			lowbits_sort(array_in.begin(), array_in.end(), array_out.begin(), counted_less<type>(ops));
+			lowbits_sort(array_in.begin(), array_in.end(), array_out.begin(), counted_less(ops));
 			optotal += ops;
 			++sortcount;
 
