@@ -105,6 +105,28 @@ public:
 	}
 };
 
+template<typename RndIt, typename OutIt, typename Pred> OutIt lowbits_sort(RndIt first, RndIt last, OutIt x, Pred pr)
+{
+	typename std::iterator_traits<RndIt>::difference_type size = last - first;
+	lowbits<RndIt, Pred> order(first, size, pr);
+
+	LOWBITS_DEBUG1(__FUNCTION__);
+	while(size)
+	{
+		*x = first[order()];
+		++x;
+		--size;
+	}
+	LOWBITS_DEBUG1("lowbits_sort done");
+
+	return x;
+}
+
+template<typename RndIt, typename OutIt> OutIt lowbits_sort(RndIt first, RndIt last, OutIt x)
+{
+	return lowbits_sort(first, last, x, std::less<typename std::iterator_traits<RndIt>::value_type>());
+}
+
 typedef unsigned short type;
 
 #endif
