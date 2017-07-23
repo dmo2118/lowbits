@@ -1,6 +1,10 @@
 #ifndef TEST_HPP
 #define TEST_HPP
 
+#ifdef _WIN32
+#	define NOMINMAX
+#endif
+
 #include "lowbits.hpp"
 
 #if 0 // defined __unix__

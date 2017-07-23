@@ -3,51 +3,55 @@
 #include <algorithm>
 #include <functional>
 #include <iostream>
-#include <vector>
+#include <memory>
 
 int main()
 {
-	std::vector<type> array_in, array_out;
-
-	size_t sortcount = 0;
-	size_t optotal = 0;
-
 	for(size_t scale = 0; scale < 32u; scale++)
 	{
-		array_in.resize(1u << scale);
-		array_out.resize(1u << scale);
+		size_t size = 1u << scale;
+		size_t sortcount = 0;
+		size_t ops_total = 0, ops_min = std::numeric_limits<size_t>::max(), ops_max = 0;
 
-		for(size_t c = 0; c < (1u << scale); ++c)
-			array_in[c] = type(c + 1);
+		std::unique_ptr<type []> array_in(new type[size]);
 
-		std::next_permutation(array_in.begin(), array_in.end());
+		for(size_t i = 0; i != size; ++i)
+			array_in[i] = type(i + 1);
 
-		while(std::adjacent_find(array_in.begin(), array_in.end(), std::greater<type>()) != array_in.end())
+		do
 		{
 			size_t ops = 0;
-			lowbits_sort(array_in.begin(), array_in.end(), array_out.begin(), counted_less(ops));
-			optotal += ops;
-			++sortcount;
+			lowbits<const type *, counted_less> lb_sort(array_in.get(), size, ops);
 
-			if(std::adjacent_find(array_out.begin(), array_out.end(), std::greater<type>()) != array_out.end())
+			for(size_t i = 0; i != size; ++i)
 			{
-				std::cout << "Failure. Original sequence:" << std::endl;
-				std::copy(array_in.begin(), array_in.end(), std::ostream_iterator<type>(std::cout, "\t"));
-				std::cout << std::endl;
-
-				std::cout << "New sequence:" << std::endl;
-				std::copy(array_out.begin(), array_out.end(), std::ostream_iterator<type>(std::cout, "\t"));
-				std::cout << std::endl;
-
-				std::cout << "Ops: " << ops << std::endl;
-				return 0;
+				if(array_in[lb_sort()] != i + 1)
+				{
+					std::cout << "Failure. Original sequence:" << std::endl;
+					std::copy(array_in.get(), array_in.get() + size, std::ostream_iterator<type>(std::cout, " "));
+					std::cout << std::endl;
+					return EXIT_FAILURE;
+				}
 			}
 
-			std::next_permutation(array_in.begin(), array_in.end());
-		}
+			ops_total += ops;
+			if(ops > ops_max)
+				ops_max = ops;
+			if(ops < ops_min)
+				ops_min = ops;
 
-		std::cout << optotal << ":" << sortcount << std::endl;
+			++sortcount;
+			std::next_permutation(array_in.get(), array_in.get() + size);
+		}
+		while(std::adjacent_find(array_in.get(), array_in.get() + size, std::greater<>()) != array_in.get() + size);
+
+		std::cout <<
+			size << '\t' <<
+			ops_min << '\t' <<
+			(double(ops_total) / sortcount) << '\t' <<
+			ops_max << '\t' <<
+			sortcount << std::endl;
 	}
 
-	return 0;
+	return EXIT_SUCCESS;
 }
