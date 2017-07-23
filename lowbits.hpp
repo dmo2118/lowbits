@@ -65,7 +65,7 @@ template<typename RndIt, typename Pred> lowbits<RndIt, Pred>::lowbits(RndIt firs
 
 	size_type bucket_size = 0, level_size = input_size;
 
-	while(level_size != 1)
+	while(level_size > 1)
 	{
 		size_type prev_level_size = level_size;
 		level_size = (level_size + 1) >> 1;

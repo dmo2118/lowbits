@@ -31,7 +31,7 @@ _lowbits_base::_lowbits_base(size_type input_size)
 	size_type bucket_size = 0;
 	size_type level_size = input_size;
 
-	while(level_size != 1)
+	while(level_size > 1)
 	{
 		level_size = (level_size + 1) >> 1;
 		bucket_size += level_size;

@@ -17,6 +17,8 @@
 
 int main()
 {
+	lowbits<type *>(NULL, 0);
+
 	static const size_t size = 47;
 
 	std::cout << "lowbits: " << size << std::endl;
