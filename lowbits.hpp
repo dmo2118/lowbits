@@ -30,8 +30,6 @@
    Remove mark area - probably can't do this.
    Optimize ascension so that there's a best match. */
 
-/* Note: To do non power-of-two sorts, mask off the ends of the bit levels according to the bits of -input_size. */
-
 class _lowbits_base
 {
 public:
@@ -69,16 +67,23 @@ template<typename RndIt, typename Pred> lowbits<RndIt, Pred>::lowbits(RndIt firs
 
 	while(level_size != 1)
 	{
+		size_type prev_level_size = level_size;
 		level_size = (level_size + 1) >> 1;
 		size_type level_first = bucket_size;
 
 		bucket_size += level_size;
 
-		for(size_type level_pt = 0; level_pt < level_size; ++level_pt)
+		for(size_type level_pt = 0; level_pt < (prev_level_size >> 1); ++level_pt)
 		{
 			_bit_bucket[level_first + level_pt] = !_pr(
 				_first[_descend(_bucket_levels.end(), level_pt << 1)],
 				_first[_descend(_bucket_levels.end(), (level_pt << 1) | 1)]);
+		}
+
+		if(prev_level_size & 1)
+		{
+			_bit_bucket[level_first + (prev_level_size >> 1)] = false;
+			_mark_area[level_first + (prev_level_size >> 1)] = true;
 		}
 
 		_bucket_levels.push_back(level_first);

@@ -8,11 +8,11 @@
 
 int main()
 {
-	for(size_t scale = 0; scale < 32u; scale++)
+	for(size_t size = 1; size < 64; ++size)
 	{
-		size_t size = 1u << scale;
 		size_t sortcount = 0;
-		size_t ops_total = 0, ops_min = std::numeric_limits<size_t>::max(), ops_max = 0;
+		size_t ops_min = std::numeric_limits<size_t>::max(), ops_max = 0;
+		unsigned long long ops_total = 0;
 
 		std::unique_ptr<type []> array_in(new type[size]);
 
