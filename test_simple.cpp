@@ -21,10 +21,11 @@ int main()
 
 	std::cout << "lowbits: " << size << std::endl;
 
-	std::srand(unsigned(std::time(NULL)));
+	std::srand(unsigned(std::time(NULL) + clock_ull()));
 
 	type array_in[size], array_out[size];
-	std::generate(array_in, array_in + size, rand);
+	for(unsigned i = 0; i != size; ++i)
+		array_in[i] = std::rand() % (size * 2);
 
 //	sort(array_in, array_in + size, less<type>());
 
@@ -48,10 +49,11 @@ int main()
 //	cout << endl;
 	std::cout << "Ops: " << ops << std::endl;
 
-	std::cout << "Time: " << (1000 * (now - then) / clock_ull_frq()) << " ms" << std::endl;
+	std::cout << "Time: " << (1000.0 * (now - then) / clock_ull_frq()) << " ms" << std::endl;
 
-	std::cout << (std::adjacent_find(array_out, array_out + size, std::greater<type>()) == array_out + size ?
-		"It's sorted!" : "It's not sorted.") << std::endl;
+	std::sort(array_in, array_in + size);
+	bool ok = std::equal(array_in, array_in + size, array_out);
+	std::cout << (ok ? "It's sorted!" : "It's not sorted.") << std::endl;
 
-	return 0;
+	return ok ? EXIT_SUCCESS : EXIT_FAILURE;
 }
