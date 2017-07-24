@@ -27,40 +27,40 @@ The tree has implicit values for each node, determined by following child nodes 
 
 Starting with the array `{2, 1, 0, 4, 6, 3, 7, 5}`:
 
-![tree0.svg](tree0.svg)
+![tree0.png](tree0.png)
 
 Initially this tree is built so that each internal node has bit 0 pointing to the lesser of its two child nodes, as indicated by
 the solid blue lines. Bit 1 is clear for all nodes.
 
-![tree1.svg](tree1.svg)
+![tree1.png](tree1.png)
 
 Following the blue lines from the root node gets us our first result.
 
-![tree2.svg](tree2.svg)
+![tree2.png](tree2.png)
 
 We don't want to get the 0 again, so flip bit 0 for its parent node, and mark bit 1 because we flipped bit 0. The node values
 change because of this, and this needs to be fixed.
 
-![tree3.svg](tree3.svg)
+![tree3.png](tree3.png)
 
 To fix this, we go to parent nodes, and like we did at the beginning, figure out which child node is the lesser node. We keep
 doing this with successive parent nodes. In this example, the parent of the grey (0->4) node was flipped (4->1). That node's
 parent, the root node, also changed its value, but it didn't need to be flipped.
 
-![tree4.svg](tree4.svg)
+![tree4.png](tree4.png)
 
 Once again, we follow the nodes via bit 0 to get our next element, a 1.
 
-![tree5.svg](tree5.svg)
+![tree5.png](tree5.png)
 
 And we flip our bit 0 for the 1's parent node. In this instance, no other nodes need to be flipped. After this is a 2.
 
-![tree6.svg](tree6.svg)
+![tree6.png](tree6.png)
 
 In this case, we've already flipped bit 0 for the 2's immediate parent node, so we head up through parent nodes until we get to
 one that hasn't been flipped yet. Then we flip that one.
 
-![tree7.svg](tree7.svg)
+![tree7.png](tree7.png)
 
 And, once again, fix the parent nodes like we did before.
 
