@@ -17,9 +17,13 @@ int main()
 
 	for(unsigned i = arraysize(source); i; --i)
 	{
-		// A lowbits object is callable, each call returns the index of
-		// the next array element in the sorted output sequence.
-		std::cout << source[lb_sort()] << ' ';
+		// A lowbits object is iterator-like. Dereferencing returns the
+		// index of the current array element in the sorted output
+		// sequence.
+		std::cout << source[*lb_sort] << ' ';
+
+		// Incrementing moves to the next element.
+		++lb_sort;
 	}
 
 	std::cout << std::endl;

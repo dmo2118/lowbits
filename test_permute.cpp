@@ -26,13 +26,15 @@ int main()
 
 			for(size_t i = 0; i != size; ++i)
 			{
-				if(array_in[lb_sort()] != i + 1)
+				if(array_in[*lb_sort] != i + 1)
 				{
 					std::cout << "Failure. Original sequence:" << std::endl;
 					std::copy(array_in.get(), array_in.get() + size, std::ostream_iterator<type>(std::cout, " "));
 					std::cout << std::endl;
 					return EXIT_FAILURE;
 				}
+
+				++lb_sort;
 			}
 
 			ops_total += ops;

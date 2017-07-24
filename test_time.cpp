@@ -29,7 +29,7 @@ int main()
 			unsigned long long then = clock_ull();
 			lowbits<const type *> lb_sort(array_in.get(), size);
 			for(unsigned i = size; i; --i)
-				lb_sort();
+				++lb_sort;
 			sum += clock_ull() - then;
 
 			++n;

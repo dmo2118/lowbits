@@ -108,12 +108,13 @@ public:
 template<typename RndIt, typename OutIt, typename Pred> OutIt lowbits_sort(RndIt first, RndIt last, OutIt x, Pred pr)
 {
 	typename std::iterator_traits<RndIt>::difference_type size = last - first;
-	lowbits<RndIt, Pred> order(first, size, pr);
+	lowbits<RndIt, Pred> lb_sort(first, size, pr);
 
 	LOWBITS_DEBUG1(__FUNCTION__);
 	while(size)
 	{
-		*x = first[order()];
+		*x = first[*lb_sort];
+		++lb_sort;
 		++x;
 		--size;
 	}

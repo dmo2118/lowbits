@@ -33,6 +33,7 @@ public:
 protected:
 	std::vector<bool> _bit_bucket, _mark_area;
 	std::vector<size_type> _bucket_levels;
+	size_type _pt;
 
 	size_type _descend(std::vector<size_type>::const_iterator x, size_type n) const;
 	_lowbits_base(size_type input_size);
@@ -48,7 +49,13 @@ public:
 	lowbits(RndIt first, size_type input_size, Pred pr = Pred());
 
 	// template<typename RndIt, typename OutIt, typename Pred> OutIt lowbits_sort(RndIt first, RndIt last, OutIt x, Pred pr)
-	size_type operator ()();
+	lowbits &operator ++();
+
+	size_type operator *() const
+	{
+		// Step 2: Output at location of bit.
+		return _pt;
+	}
 };
 
 template<typename RndIt, typename Pred> lowbits<RndIt, Pred>::lowbits(RndIt first, size_type input_size, Pred pr):
@@ -83,25 +90,15 @@ template<typename RndIt, typename Pred> lowbits<RndIt, Pred>::lowbits(RndIt firs
 
 		_bucket_levels.push_back(level_first);
 	}
-}
-
-template<typename RndIt, typename Pred> _lowbits_base::size_type lowbits<RndIt, Pred>::operator ()()
-{
-	// Termination is a wild guess.
 
 	// Step 1: Descend to location of lowest bit.
+	_pt = _descend(_bucket_levels.end(), 0);
+}
 
-	// Step 1.1: Reset level pointers because I don't feel like tweaking the ascender...yet.
-	typename std::vector<size_type>::iterator level_it = _bucket_levels.end();
-	size_type level_pt = 0;
-
-	level_pt = _descend(level_it, level_pt);
-
-	// Step 2: Output at location of bit.
-	size_type result = level_pt;
-
-	level_it = _bucket_levels.begin();
-	level_pt >>= 1;
+template<typename RndIt, typename Pred> lowbits<RndIt, Pred> &lowbits<RndIt, Pred>::operator ++()
+{
+	typename std::vector<size_type>::iterator level_it = _bucket_levels.begin();
+	size_type level_pt = _pt >> 1;
 
 	// Step 3.0: Ascend until marked area is not empty.
 
@@ -114,7 +111,7 @@ template<typename RndIt, typename Pred> _lowbits_base::size_type lowbits<RndIt, 
 	}
 
 	if(level_it == _bucket_levels.end()) // Termination goeth here (?)
-		return result;
+		return *this;
 
 	// Step 3.1: Flip a bit in the marked area, and ascend out.
 
@@ -172,8 +169,10 @@ template<typename RndIt, typename Pred> _lowbits_base::size_type lowbits<RndIt, 
 
 	LOWBITS_DEBUG2('\n');
 
+	_pt = _descend(_bucket_levels.end(), 0);
+
 	// Step 4: NEXT!
-	return result;
+	return *this;
 }
 
 #endif
