@@ -27,9 +27,13 @@ int main()
 				array_in[i] = std::rand() % (size * 4);
 
 			unsigned long long then = clock_ull();
+#if 1
 			lowbits<const type *> lb_sort(array_in.get(), size);
 			for(unsigned i = size; i; --i)
 				++lb_sort;
+#else
+			std::sort(array_in.get(), array_in.get() + size);
+#endif
 			sum += clock_ull() - then;
 
 			++n;

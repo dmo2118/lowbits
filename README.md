@@ -8,9 +8,10 @@ Starting with an unordered array, Lowbits outputs the elements of that array in 
 modified, though it must remain available in memory during the sort process. This requires O(n log n) comparisons and O(n) space
 complexity.
 
-The bookkeeping here is fairly expensive. To get a sorted array from this algorithm, it can be much cheaper to copy the source
-array into the destination array, and sort that. To get the first N elements of the sorted destination sequence, it might be
-faster to feed the elements of the source array to a priority queue with a maximum size of N+1 elements.
+The bookkeeping here is fairly expensive: [libstdc++](https://gcc.gnu.org/onlinedocs/libstdc++/) std::sort() for plain integers
+can run 10-15 times faster. To get a sorted array from this algorithm, it can be much cheaper to copy the source array into the
+destination array, and sort that. To get the first N elements of the sorted destination sequence, it's probably faster to feed
+the elements of the source array to a priority queue with a maximum size of N+1 elements.
 
 This repository contains a (mildly suboptimal) C++ implementation of the algorithm. See [`example.cpp`](example.cpp).
 
