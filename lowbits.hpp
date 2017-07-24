@@ -3,6 +3,8 @@
 #ifndef LOWBITS_HPP
 #define LOWBITS_HPP
 
+// Note: Code here is suboptimal. This algorithm may never be fast, but at least it can be a bit faster.
+
 #include <cassert>
 #include <functional>
 #include <vector>
@@ -31,7 +33,7 @@ public:
 	typedef typename std::vector<bool>::size_type size_type;
 
 protected:
-	std::vector<bool> _bit_bucket, _mark_area;
+	std::vector<bool> _bit_bucket, _mark_area; // TODO: Merge these.
 	std::vector<size_type> _bucket_levels;
 	size_type _pt;
 
