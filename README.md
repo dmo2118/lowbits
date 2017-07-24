@@ -12,7 +12,7 @@ The bookkeeping here is fairly expensive. To get a sorted array from this algori
 array into the destination array, and sort that. To get the first N elements of the sorted destination sequence, it might be
 faster to feed the elements of the source array to a priority queue with a maximum size of N+1 elements.
 
-This repository contains a (currently suboptimal) C++ implementation of the algorithm. See [`example.cpp`](example.cpp).
+This repository contains a (mildly suboptimal) C++ implementation of the algorithm. See [`example.cpp`](example.cpp).
 
 How does it work?
 -----------------

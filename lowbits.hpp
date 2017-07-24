@@ -122,7 +122,7 @@ template<typename RndIt, typename Pred> lowbits<RndIt, Pred> &lowbits<RndIt, Pre
 
 	// Step 3.2: Flip bits & ascend until predicate is true.
 
-	size_type pt = _descend(level_it, (level_pt << 1) | _bit_bucket[*level_it + level_pt]);
+	_pt = _descend(level_it, (level_pt << 1) | _bit_bucket[*level_it + level_pt]);
 
 	for(;;)
 	{
@@ -136,11 +136,11 @@ template<typename RndIt, typename Pred> lowbits<RndIt, Pred> &lowbits<RndIt, Pre
 		if(_bit_bucket[*level_it + level_pt])
 		{
 			pt0 = _descend(level_it, (level_pt << 1));
-			pt1 = pt;
+			pt1 = _pt;
 		}
 		else
 		{
-			pt0 = pt;
+			pt0 = _pt;
 			pt1 = _descend(level_it, (level_pt << 1) | 1);
 		}
 
@@ -162,14 +162,10 @@ template<typename RndIt, typename Pred> lowbits<RndIt, Pred> &lowbits<RndIt, Pre
 			LOWBITS_DEBUG2("0;");
 		}
 
-		pt = _bit_bucket[*level_it + level_pt] ? pt1 : pt0;
+		_pt = _bit_bucket[*level_it + level_pt] ? pt1 : pt0;
 	}
 
-	// TODO: We should already know the next result at this point. Save it.
-
 	LOWBITS_DEBUG2('\n');
-
-	_pt = _descend(_bucket_levels.end(), 0);
 
 	// Step 4: NEXT!
 	return *this;
