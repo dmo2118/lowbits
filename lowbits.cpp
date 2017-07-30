@@ -1,26 +1,14 @@
 #include "lowbits.hpp"
 
-namespace
-{
-	template<typename BoolIt, typename BoolItIt, typename Diff> inline Diff _descend(
-		const BoolIt &b,
-		const BoolItIt &first,
-		BoolItIt x,
-		Diff n)
-	{
-		while(x != first)
-		{
-			--x;
-			n = (n << 1) | (Diff)b[*x + n];
-		}
-
-		return n;
-	}
-}
-
 _lowbits_base::size_type _lowbits_base::_descend(std::vector<size_type>::const_iterator x, size_type n) const
 {
-	return ::_descend(_bit_bucket, _bucket_levels.begin(), x, n);
+	while(x != _bucket_levels.begin())
+	{
+		--x;
+		n = (n << 1) | _bit_bucket[*x + n];
+	}
+
+	return n;
 }
 
 _lowbits_base::_lowbits_base(size_type input_size)
