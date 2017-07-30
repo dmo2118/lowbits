@@ -1,5 +1,5 @@
 # GCC 5 and earlier needs -std=c++14.
-CXXFLAGS=-std=c++14 -Wall -g # -O3 -DNDEBUG
+CXXFLAGS=-std=c++11 -Wall -g # -O3 -DNDEBUG
 
 exes=test_simple test_permute test_time example
 objs=$(patsubst %,%.o,$(exes))

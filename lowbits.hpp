@@ -41,7 +41,8 @@ protected:
 	_lowbits_base(size_type input_size);
 };
 
-template<typename RndIt, typename Pred = std::less<> > class lowbits: public _lowbits_base
+template<typename RndIt, typename Pred = std::less<typename std::iterator_traits<RndIt>::value_type> > class lowbits:
+	public _lowbits_base
 {
 private:
 	RndIt _first;

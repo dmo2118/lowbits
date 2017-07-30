@@ -48,7 +48,7 @@ int main(int argc, char **argv)
 			++sortcount;
 			std::next_permutation(array_in.get(), array_in.get() + size);
 		}
-		while(std::adjacent_find(array_in.get(), array_in.get() + size, std::greater<>()) != array_in.get() + size);
+		while(std::adjacent_find(array_in.get(), array_in.get() + size, std::greater<type>()) != array_in.get() + size);
 
 		std::cout <<
 			size << '\t' <<

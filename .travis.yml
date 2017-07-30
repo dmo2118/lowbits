@@ -1,2 +1,2 @@
 language: cpp
-script: make -j`nproc` CXXFLAGS='-std=c++14 -Wall -g -O3' test
+script: make -j`nproc` CXXFLAGS='-std=c++11 -Wall -g -O3' test
