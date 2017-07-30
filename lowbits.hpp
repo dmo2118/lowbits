@@ -73,30 +73,26 @@ template<typename RndIt, typename Pred> lowbits<RndIt, Pred>::lowbits(RndIt firs
 
 	// Step 0.1: Populate the trei; gather stating bit locations.
 
-	size_type bucket_size = 0, level_size = input_size;
+	size_type level_size = input_size;
 
-	while(level_size > 1)
+	for(std::vector<size_type>::iterator level_it = _bucket_levels.begin(); level_it != _bucket_levels.end(); ++level_it)
 	{
-		size_type prev_level_size = level_size;
-		level_size = (level_size + 1) >> 1;
-		size_type level_first = bucket_size << 1;
+		size_type level_first = *level_it;
 
-		bucket_size += level_size;
-
-		for(size_type level_pt = 0; level_pt < (prev_level_size >> 1); ++level_pt)
+		for(size_type level_pt = 0; level_pt < (level_size >> 1); ++level_pt)
 		{
 			_tree0(level_first, level_pt) = !_pr(
-				_first[_descend(_bucket_levels.end(), level_pt << 1)],
-				_first[_descend(_bucket_levels.end(), (level_pt << 1) | 1)]);
+				_first[_descend(level_it, level_pt << 1)],
+				_first[_descend(level_it, (level_pt << 1) | 1)]);
 		}
 
-		if(prev_level_size & 1)
+		if(level_size & 1)
 		{
-			_tree0(level_first, (prev_level_size >> 1)) = false;
-			_tree0(level_first, (prev_level_size >> 1), true) = true;
+			_tree0(level_first, (level_size >> 1)) = false;
+			_tree0(level_first, (level_size >> 1), true) = true;
 		}
 
-		_bucket_levels.push_back(level_first);
+		level_size = (level_size + 1) >> 1;
 	}
 
 	// Step 1: Descend to location of lowest bit.
