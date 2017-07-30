@@ -6,9 +6,11 @@
 #include <iterator>
 #include <memory>
 
-int main()
+int main(int argc, char **argv)
 {
-	for(size_t size = 1; size < 64; ++size)
+	size_t max_size = argc > 1 ? std::atoi(argv[1]) : 32;
+
+	for(size_t size = 0; size <= max_size; ++size)
 	{
 		size_t sortcount = 0;
 		size_t ops_min = std::numeric_limits<size_t>::max(), ops_max = 0;

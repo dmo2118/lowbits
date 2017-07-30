@@ -23,6 +23,11 @@ lowbits.o: lowbits.cpp lowbits.hpp
 example.o: example.cpp lowbits.hpp
 	$(compile_cmd) $@ $<
 
+test: test_simple test_permute example
+	./test_simple
+	tmp=`tempfile` && ./example > $tmp && (echo '0 1 2 3 4 5 6 7 ' | diff - $tmp) && rm $tmp
+	./test_permute 10
+
 # tree*.png files are for the benefit of GitHub, which does not support SVG images.
 png=$(patsubst %.svg,%.png,$(wildcard tree*.svg))
 
