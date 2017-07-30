@@ -1,4 +1,4 @@
-Lowbits
+Lowbits [![Build Status](https://travis-ci.org/dmo2118/lowbits.svg?branch=master)](https://travis-ci.org/dmo2118/lowbits)
 =======
 An out-of-place sorting algorithm.
 
