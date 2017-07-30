@@ -1,54 +1,14 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<?xml-stylesheet type="text/css" href="style.css" ?>
 
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="257" height="225">
-
-<style>
-svg {
-	fill: #ffffff;
-	stroke: #ddddde;
-	stroke-width: 1px;
-}
-
-text {
-	font-size: 24px;
-	stroke-width: 0px;
-	font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
-	text-anchor: middle;
-	fill: #24292e;
-	transform: translate(0px, -8px);
-}
-
-.p0 {
-	stroke: #24292e;
-	stroke-dasharray: 4,4
-}
-
-.p1 {
-	stroke: #0366D6;
-	stroke-width: 2px;
-}
-
-.highlight {
-	fill: #f1f8ff;
-	stroke: #c8e1ff;
-}
-
-.changed
-{
-	fill: #0366D6;
-}
-
-.used
-{
-	fill: #f3f3f3;
-}
-</style>
 
 <g transform="translate(0.5,0.5)">
 	<path class="p1" d="m 128,32 -64,32" />
 	<path class="p0" d="m 128,32  64,32" />
 	<rect x="112" y="0" width="32" height="32" rx="3" />
-	<text x="128" y="32" class="changed">1</text>
+	<text x="128" y="24" class="changed">1</text>
 
 	<path class="p1" d="m 64, 96 -32,32" />
 	<path class="p0" d="m 64, 96  32,32" />
@@ -56,8 +16,8 @@ text {
 	<path class="p0" d="m 192,96  32,32" />
 	<rect x="48"  y="64" width="32" height="32" rx="3" />
 	<rect x="176" y="64" width="32" height="32" rx="3" />
-	<text x="64"  y="96" class="changed">1</text>
-	<text x="192" y="96">3</text>
+	<text x="64"  y="88" class="changed">1</text>
+	<text x="192" y="88">3</text>
 
 	<path class="p0" d="m 32, 160 -16,32" />
 	<path class="p1" d="m 32, 160  16,32" />
@@ -71,10 +31,10 @@ text {
 	<rect x="80"  y="128" width="32" height="32" ry="3" class="used" />
 	<rect x="144" y="128" width="32" height="32" ry="3" />
 	<rect x="208" y="128" width="32" height="32" ry="3" />
-	<text x="32"  y="160">1</text>
-	<text x="96"  y="160">4</text>
-	<text x="160" y="160">3</text>
-	<text x="224" y="160">5</text>
+	<text x="32"  y="152">1</text>
+	<text x="96"  y="152">4</text>
+	<text x="160" y="152">3</text>
+	<text x="224" y="152">5</text>
 
 	<rect x="0" y="192" width="256" height="32" ry="3" />
 	<path d="m 32, 192 v 32" />
@@ -84,14 +44,14 @@ text {
 	<path d="m 160,192 v 32" />
 	<path d="m 192,192 v 32" />
 	<path d="m 224,192 v 32" />
-	<text x="16"  y="224">2</text>
-	<text x="48"  y="224">1</text>
-	<text x="80"  y="224">0</text>
-	<text x="112" y="224">4</text>
-	<text x="144" y="224">6</text>
-	<text x="176" y="224">3</text>
-	<text x="208" y="224">7</text>
-	<text x="240" y="224">5</text>
+	<text x="16"  y="216">2</text>
+	<text x="48"  y="216">1</text>
+	<text x="80"  y="216">0</text>
+	<text x="112" y="216">4</text>
+	<text x="144" y="216">6</text>
+	<text x="176" y="216">3</text>
+	<text x="208" y="216">7</text>
+	<text x="240" y="216">5</text>
 </g>
 
 </svg>

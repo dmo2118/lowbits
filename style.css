@@ -1,0 +1,38 @@
+svg {
+	fill: #ffffff;
+	stroke: #ddddde;
+	stroke-width: 1px;
+}
+
+text {
+	font-size: 24px;
+	stroke-width: 0px;
+	font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+	text-anchor: middle;
+	fill: #24292e;
+}
+
+.p0 {
+	stroke: #24292e;
+	stroke-dasharray: 4,4
+}
+
+.p1 {
+	stroke: #0366D6;
+	stroke-width: 2px;
+}
+
+.highlight {
+	fill: #f1f8ff;
+	stroke: #c8e1ff;
+}
+
+.changed
+{
+	fill: #0366D6;
+}
+
+.used
+{
+	fill: #f3f3f3;
+}

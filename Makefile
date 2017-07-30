@@ -9,7 +9,7 @@ compile_cmd=$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) -o
 all: $(exes)
 
 clean:
-	rm -f $(exes) $(objs) lowbits.o
+	rm -f $(exes) $(objs) lowbits.o # $(png)
 
 %: %.o lowbits.o
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ $^
@@ -22,6 +22,15 @@ lowbits.o: lowbits.cpp lowbits.hpp
 
 example.o: example.cpp lowbits.hpp
 	$(compile_cmd) $@ $<
+
+# tree*.png files are for the benefit of GitHub, which does not support SVG images.
+png=$(patsubst %.svg,%.png,$(wildcard tree*.svg))
+
+png: $(png)
+
+%.png: %.svg style.css
+	rsvg-convert -o $@ $<
+	-optipng -quiet -o5 $@
 
 .SECONDARY: $(objs)
 
