@@ -15,7 +15,7 @@ int main()
 	// The Lowbits sort engine.
 	lowbits<const int *> lb_sort(source, arraysize(source));
 
-	for(unsigned i = arraysize(source); i; --i)
+	for(std::size_t i = arraysize(source); i; --i)
 	{
 		// A lowbits object is iterator-like. Dereferencing returns the
 		// index of the current array element in the sorted output
