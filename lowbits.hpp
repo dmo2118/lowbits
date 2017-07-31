@@ -33,9 +33,14 @@ public:
 	typedef typename std::vector<bool>::size_type size_type;
 
 protected:
-	std::vector<bool> _bit_bucket, _mark_area; // TODO: Merge these.
+	std::vector<bool> _tree; // TODO: _tree -> unique_ptr<word []>, _bucket_levels -> unique_ptr<word *[]>
 	std::vector<size_type> _bucket_levels;
 	size_type _pt;
+
+	std::vector<bool>::reference _tree0(size_type base, std::size_t n, bool mark = false)
+	{
+		return _tree[(base + (n << 1)) | mark];
+	}
 
 	size_type _descend(std::vector<size_type>::const_iterator x, size_type n) const;
 	_lowbits_base(size_type input_size);
@@ -74,21 +79,21 @@ template<typename RndIt, typename Pred> lowbits<RndIt, Pred>::lowbits(RndIt firs
 	{
 		size_type prev_level_size = level_size;
 		level_size = (level_size + 1) >> 1;
-		size_type level_first = bucket_size;
+		size_type level_first = bucket_size << 1;
 
 		bucket_size += level_size;
 
 		for(size_type level_pt = 0; level_pt < (prev_level_size >> 1); ++level_pt)
 		{
-			_bit_bucket[level_first + level_pt] = !_pr(
+			_tree0(level_first, level_pt) = !_pr(
 				_first[_descend(_bucket_levels.end(), level_pt << 1)],
 				_first[_descend(_bucket_levels.end(), (level_pt << 1) | 1)]);
 		}
 
 		if(prev_level_size & 1)
 		{
-			_bit_bucket[level_first + (prev_level_size >> 1)] = false;
-			_mark_area[level_first + (prev_level_size >> 1)] = true;
+			_tree0(level_first, (prev_level_size >> 1)) = false;
+			_tree0(level_first, (prev_level_size >> 1), true) = true;
 		}
 
 		_bucket_levels.push_back(level_first);
@@ -105,7 +110,7 @@ template<typename RndIt, typename Pred> lowbits<RndIt, Pred> &lowbits<RndIt, Pre
 
 	// Step 3.0: Ascend until marked area is not empty.
 
-	while(level_it != _bucket_levels.end() && _mark_area[*level_it + level_pt])
+	while(level_it != _bucket_levels.end() && _tree0(*level_it, level_pt, true))
 	{
 		LOWBITS_DEBUG2("x");
 
@@ -120,12 +125,12 @@ template<typename RndIt, typename Pred> lowbits<RndIt, Pred> &lowbits<RndIt, Pre
 
 	LOWBITS_DEBUG2(";");
 
-	_mark_area[*level_it + level_pt].flip();
-	_bit_bucket[*level_it + level_pt].flip();
+	_tree0(*level_it, level_pt, true).flip();
+	_tree0(*level_it, level_pt).flip();
 
 	// Step 3.2: Flip bits & ascend until predicate is true.
 
-	_pt = _descend(level_it, (level_pt << 1) | _bit_bucket[*level_it + level_pt]);
+	_pt = _descend(level_it, (level_pt << 1) | _tree0(*level_it, level_pt));
 
 	for(;;)
 	{
@@ -136,7 +141,7 @@ template<typename RndIt, typename Pred> lowbits<RndIt, Pred> &lowbits<RndIt, Pre
 			break;
 
 		size_type pt0, pt1;
-		if(_bit_bucket[*level_it + level_pt])
+		if(_tree0(*level_it, level_pt))
 		{
 			pt0 = _descend(level_it, (level_pt << 1));
 			pt1 = _pt;
@@ -152,20 +157,17 @@ template<typename RndIt, typename Pred> lowbits<RndIt, Pred> &lowbits<RndIt, Pre
 
 		LOWBITS_DEBUG2(pt0 << "," << pt1 << ":");
 
-		if(!_mark_area[*level_it + level_pt] &&
-			_bit_bucket[*level_it + level_pt] != !_pr(
-				_first[pt0],
-				_first[pt1]))
+		if(!_tree0(*level_it, level_pt, true) && _tree0(*level_it, level_pt) != !_pr(_first[pt0], _first[pt1]))
 		{
 			LOWBITS_DEBUG2("1;");
-			_bit_bucket[*level_it + level_pt].flip();
+			_tree0(*level_it, level_pt).flip();
 		}
 		else
 		{
 			LOWBITS_DEBUG2("0;");
 		}
 
-		_pt = _bit_bucket[*level_it + level_pt] ? pt1 : pt0;
+		_pt = _tree0(*level_it, level_pt) ? pt1 : pt0;
 	}
 
 	LOWBITS_DEBUG2('\n');

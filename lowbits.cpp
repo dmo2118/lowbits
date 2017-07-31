@@ -5,7 +5,7 @@ _lowbits_base::size_type _lowbits_base::_descend(std::vector<size_type>::const_i
 	while(x != _bucket_levels.begin())
 	{
 		--x;
-		n = (n << 1) | _bit_bucket[*x + n];
+		n = (n << 1) | _tree[*x + (n << 1)];
 	}
 
 	return n;
@@ -25,6 +25,5 @@ _lowbits_base::_lowbits_base(size_type input_size)
 		bucket_size += level_size;
 	}
 
-	_bit_bucket.resize(bucket_size);
-	_mark_area.resize(bucket_size);
+	_tree.resize(bucket_size << 1);
 }
