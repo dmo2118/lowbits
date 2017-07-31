@@ -26,8 +26,8 @@ example.o: example.cpp lowbits.hpp
 test: test_simple example test_rand test_permute
 	./test_simple
 	tmp=`mktemp` && ./example > $$tmp && (echo '0 1 2 3 4 5 6 7 ' | diff - $$tmp) && rm $$tmp
-	sh -c 'time ./test_rand 3'
-	sh -c 'time ./test_permute 10'
+	bash -c 'time ./test_rand 3'
+	bash -c 'time ./test_permute 10'
 
 # tree*.png files are for the benefit of GitHub, which does not support SVG images.
 png=$(patsubst %.svg,%.png,$(wildcard tree*.svg))
