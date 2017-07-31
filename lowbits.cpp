@@ -6,7 +6,7 @@ _lowbits_base::size_type _lowbits_base::_descend(std::vector<size_type>::const_i
 	{
 		--x;
 		n <<= 1;
-		n |= _tree[*x + n];
+		n |= bool(_bit_ref(_tree.get(), *x + n));
 	}
 
 	return n;
@@ -28,5 +28,7 @@ _lowbits_base::_lowbits_base(size_type input_size)
 		bucket_size += level_size;
 	}
 
-	_tree.resize(bucket_size << 1);
+	size_t tree_words = ((bucket_size << 1) + _word_bits - 1) / _word_bits;
+	_tree.reset(new _word_type[tree_words]);
+	std::fill(_tree.get(), _tree.get() + tree_words, 0);
 }

@@ -7,6 +7,8 @@
 
 #include <cassert>
 #include <functional>
+#include <limits>
+#include <memory>
 #include <vector>
 
 #if LOWBITS_DEBUG >= 1
@@ -33,13 +35,52 @@ public:
 	typedef typename std::vector<bool>::size_type size_type;
 
 protected:
-	std::vector<bool> _tree; // TODO: _tree -> unique_ptr<word []>, _bucket_levels -> unique_ptr<word *[]>
+	typedef std::size_t _word_type;
+	std::unique_ptr<_word_type []> _tree; // TODO: _bucket_levels -> unique_ptr<_word_type *[]>
 	std::vector<size_type> _bucket_levels;
 	size_type _pt;
 
-	std::vector<bool>::reference _tree0(size_type base, std::size_t n, bool mark = false)
+	enum
 	{
-		return _tree[(base + (n << 1)) | mark];
+		_word_bits = std::numeric_limits<_word_type>::digits
+	};
+
+	class _bit_ref
+	{
+	private:
+		_word_type *_ptr;
+		_word_type _mask;
+
+	public:
+		_bit_ref(_word_type *words, size_type offset_bits):
+			_ptr(words + (offset_bits / _word_bits)),
+			_mask(_word_type(1) << (offset_bits & (_word_bits - 1)))
+		{
+		}
+
+		operator bool() const
+		{
+			return *_ptr & _mask;
+		}
+
+		const _bit_ref &operator =(bool x) const
+		{
+			if(x)
+				*_ptr |= _mask;
+			else
+				*_ptr &= ~_mask;
+			return *this;
+		}
+
+		void flip() const
+		{
+			*_ptr ^= _mask;
+		}
+	};
+
+	_bit_ref _tree0(size_type base, size_t n, bool mark = false)
+	{
+		return _bit_ref(_tree.get(), (base + (n << 1)) | mark);
 	}
 
 	size_type _descend(std::vector<size_type>::const_iterator x, size_type n) const;
