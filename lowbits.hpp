@@ -36,8 +36,8 @@ public:
 
 protected:
 	typedef std::size_t _word_type;
-	std::unique_ptr<_word_type []> _tree; // TODO: _bucket_levels -> unique_ptr<_word_type *[]>
-	std::vector<size_type> _bucket_levels;
+	std::unique_ptr<_word_type []> _tree;
+	std::vector<_word_type *> _bucket_levels; // TODO: This could be another unique_ptr instead of a vector.
 	size_type _pt;
 
 	enum
@@ -78,12 +78,12 @@ protected:
 		}
 	};
 
-	_bit_ref _tree0(size_type base, size_t n, bool mark = false)
+	_bit_ref _tree0(_word_type *base, size_t n, bool mark = false)
 	{
-		return _bit_ref(_tree.get(), (base + (n << 1)) | mark);
+		return _bit_ref(base, (n << 1) | mark);
 	}
 
-	size_type _descend(std::vector<size_type>::const_iterator x, size_type n) const;
+	size_type _descend(std::vector<_word_type *>::const_iterator x, size_type n) const;
 	_lowbits_base(size_type input_size);
 };
 
@@ -116,9 +116,9 @@ template<typename RndIt, typename Pred> lowbits<RndIt, Pred>::lowbits(RndIt firs
 
 	size_type level_size = input_size;
 
-	for(std::vector<size_type>::iterator level_it = _bucket_levels.begin(); level_it != _bucket_levels.end(); ++level_it)
+	for(std::vector<_word_type *>::const_iterator level_it = _bucket_levels.begin(); level_it != _bucket_levels.end(); ++level_it)
 	{
-		size_type level_first = *level_it;
+		_word_type *level_first = *level_it;
 
 		for(size_type level_pt = 0; level_pt < (level_size >> 1); ++level_pt)
 		{
@@ -142,7 +142,7 @@ template<typename RndIt, typename Pred> lowbits<RndIt, Pred>::lowbits(RndIt firs
 
 template<typename RndIt, typename Pred> lowbits<RndIt, Pred> &lowbits<RndIt, Pred>::operator ++()
 {
-	typename std::vector<size_type>::iterator level_it = _bucket_levels.begin();
+	typename std::vector<_word_type *>::iterator level_it = _bucket_levels.begin();
 	size_type level_pt = _pt >> 1;
 
 	// Step 3.0: Ascend until marked area is not empty.
