@@ -1,7 +1,7 @@
 # GCC 5 and earlier needs -std=c++14.
 CXXFLAGS=-std=c++11 -Wall -g # -O3 -DNDEBUG
 
-exes=test_simple test_permute test_time example
+exes=test_permute test_simple test_rand test_time example
 objs=$(patsubst %,%.o,$(exes))
 
 compile_cmd=$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) -o
@@ -23,10 +23,11 @@ lowbits.o: lowbits.cpp lowbits.hpp
 example.o: example.cpp lowbits.hpp
 	$(compile_cmd) $@ $<
 
-test: test_simple test_permute example
+test: test_simple example test_rand test_permute
 	./test_simple
 	tmp=`mktemp` && ./example > $$tmp && (echo '0 1 2 3 4 5 6 7 ' | diff - $$tmp) && rm $$tmp
-	./test_permute 10
+	sh -c 'time ./test_rand 3'
+	sh -c 'time ./test_permute 10'
 
 # tree*.png files are for the benefit of GitHub, which does not support SVG images.
 png=$(patsubst %.svg,%.png,$(wildcard tree*.svg))
