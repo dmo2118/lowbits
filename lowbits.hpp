@@ -3,8 +3,6 @@
 #ifndef LOWBITS_HPP
 #define LOWBITS_HPP
 
-// Note: Code here is suboptimal. This algorithm may never be fast, but at least it can be a bit faster.
-
 #include <cassert>
 #include <functional>
 #include <limits>
@@ -45,42 +43,19 @@ protected:
 		_word_bits = std::numeric_limits<_word_type>::digits
 	};
 
-	class _bit_ref
+	static size_type _word_offset(size_type offset_bits)
 	{
-	private:
-		_word_type *_ptr;
-		_word_type _mask;
+		return offset_bits / _word_bits;
+	}
 
-	public:
-		_bit_ref(_word_type *words, size_type offset_bits):
-			_ptr(words + (offset_bits / _word_bits)),
-			_mask(_word_type(1) << (offset_bits & (_word_bits - 1)))
-		{
-		}
-
-		operator bool() const
-		{
-			return *_ptr & _mask;
-		}
-
-		const _bit_ref &operator =(bool x) const
-		{
-			if(x)
-				*_ptr |= _mask;
-			else
-				*_ptr &= ~_mask;
-			return *this;
-		}
-
-		void flip() const
-		{
-			*_ptr ^= _mask;
-		}
-	};
-
-	_bit_ref _tree0(_word_type *base, size_t n, bool mark = false)
+	static size_type _word_mask(size_type offset_bits)
 	{
-		return _bit_ref(base, (n << 1) | mark);
+		return _word_type(1) << (offset_bits & (_word_bits - 1));
+	}
+
+	static size_type _round2(size_type n)
+	{
+		return n & ~size_type(1);
 	}
 
 	size_type _descend(std::vector<_word_type *>::const_iterator x, size_type n) const;
@@ -119,19 +94,20 @@ template<typename RndIt, typename Pred> lowbits<RndIt, Pred>::lowbits(RndIt firs
 	for(std::vector<_word_type *>::const_iterator level_it = _bucket_levels.begin(); level_it != _bucket_levels.end(); ++level_it)
 	{
 		_word_type *level_first = *level_it;
+		size_type level_size1 = _round2(level_size);
 
-		for(size_type level_pt = 0; level_pt < (level_size >> 1); ++level_pt)
+		for(size_type level_pt = 0; level_pt != level_size1; level_pt += 2)
 		{
-			_tree0(level_first, level_pt) = !_pr(
-				_first[_descend(level_it, level_pt << 1)],
-				_first[_descend(level_it, (level_pt << 1) | 1)]);
+			if(!_pr(
+				_first[_descend(level_it, level_pt)],
+				_first[_descend(level_it, level_pt | 1)]))
+			{
+				level_first[_word_offset(level_pt)] |= _word_mask(level_pt);
+			}
 		}
 
 		if(level_size & 1)
-		{
-			_tree0(level_first, (level_size >> 1)) = false;
-			_tree0(level_first, (level_size >> 1), true) = true;
-		}
+			level_first[_word_offset(level_size1)] |= _word_mask(level_size1) << 1;
 
 		level_size = (level_size + 1) >> 1;
 	}
@@ -143,68 +119,75 @@ template<typename RndIt, typename Pred> lowbits<RndIt, Pred>::lowbits(RndIt firs
 template<typename RndIt, typename Pred> lowbits<RndIt, Pred> &lowbits<RndIt, Pred>::operator ++()
 {
 	typename std::vector<_word_type *>::iterator level_it = _bucket_levels.begin();
-	size_type level_pt = _pt >> 1;
+	size_type level_pt = _pt;
 
 	// Step 3.0: Ascend until marked area is not empty.
-
-	while(level_it != _bucket_levels.end() && _tree0(*level_it, level_pt, true))
+	for(;;)
 	{
+		if(level_it == _bucket_levels.end()) // Termination goeth here (?)
+			return *this;
+
+		size_type level_pt1 = _round2(level_pt);
+		_word_type &level_word = (*level_it)[_word_offset(level_pt1)];
+		_word_type level_mask = _word_mask(level_pt1);
+
+		if(!(level_word & (level_mask << 1)))
+		{
+			// Step 3.1: Flip a bit in the marked area, and ascend out.
+			LOWBITS_DEBUG2(";");
+			level_word ^= level_mask | (level_mask << 1);
+
+			// Step 3.2: Flip bits & ascend until predicate is true.
+			_pt = _descend(level_it, level_pt1 | ((level_word & level_mask) != 0));
+			break;
+		}
+
 		LOWBITS_DEBUG2("x");
 
 		++level_it;
 		level_pt >>= 1;
 	}
 
-	if(level_it == _bucket_levels.end()) // Termination goeth here (?)
-		return *this;
-
-	// Step 3.1: Flip a bit in the marked area, and ascend out.
-
-	LOWBITS_DEBUG2(";");
-
-	_tree0(*level_it, level_pt, true).flip();
-	_tree0(*level_it, level_pt).flip();
-
-	// Step 3.2: Flip bits & ascend until predicate is true.
-
-	_pt = _descend(level_it, (level_pt << 1) | _tree0(*level_it, level_pt));
-
 	for(;;)
 	{
-		++level_it;
 		level_pt >>= 1;
+		++level_it;
 
 		if(level_it == _bucket_levels.end())
 			break;
 
+		size_type level_pt1 = _round2(level_pt);
+		_word_type &level_word = (*level_it)[_word_offset(level_pt1)];
+		_word_type level_mask = _word_mask(level_pt1);
+
 		size_type pt0, pt1;
-		if(_tree0(*level_it, level_pt))
+		if(level_word & level_mask)
 		{
-			pt0 = _descend(level_it, (level_pt << 1));
+			pt0 = _descend(level_it, level_pt1);
 			pt1 = _pt;
 		}
 		else
 		{
 			pt0 = _pt;
-			pt1 = _descend(level_it, (level_pt << 1) | 1);
+			pt1 = _descend(level_it, level_pt1 | 1);
 		}
 
-		assert(pt0 == _descend(level_it, (level_pt << 1)));
-		assert(pt1 == _descend(level_it, (level_pt << 1) | 1));
+		assert(pt0 == _descend(level_it, level_pt1));
+		assert(pt1 == _descend(level_it, level_pt1 | 1));
 
 		LOWBITS_DEBUG2(pt0 << "," << pt1 << ":");
 
-		if(!_tree0(*level_it, level_pt, true) && _tree0(*level_it, level_pt) != !_pr(_first[pt0], _first[pt1]))
+		if(!(level_word & (level_mask << 1)) && !(level_word & level_mask) != _pr(_first[pt0], _first[pt1]))
 		{
 			LOWBITS_DEBUG2("1;");
-			_tree0(*level_it, level_pt).flip();
+			level_word ^= level_mask;
 		}
 		else
 		{
 			LOWBITS_DEBUG2("0;");
 		}
 
-		_pt = _tree0(*level_it, level_pt) ? pt1 : pt0;
+		_pt = (level_word & level_mask) ? pt1 : pt0;
 	}
 
 	LOWBITS_DEBUG2('\n');

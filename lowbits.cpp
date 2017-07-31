@@ -6,7 +6,7 @@ _lowbits_base::size_type _lowbits_base::_descend(std::vector<_word_type *>::cons
 	{
 		--x;
 		n <<= 1;
-		n |= bool(_bit_ref(*x, n));
+		n |= ((*x)[_word_offset(n)] & _word_mask(n)) != 0;
 	}
 
 	return n;
